@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id='view_message_form_inherit' model='ir.ui.view'>
+        <field name="name">mail.message.form.inherit</field>
+        <field name="model">mail.message</field>
+        <field name="inherit_id" ref="mail.view_message_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_ids" position="after">
+                <field name="email_cc_ids" widget="many2many_tags"/>
+                <field name="email_bcc_ids" widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+
+
+    <record id='email_compose_message_wizard_form_inherit' model='ir.ui.view'>
+        <field name="name">mail.compose.message.form.inherit</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='notify']" position="before">
+                <field name="is_cc" invisible="1"/>
+                <field name="is_bcc" invisible="1"/>
+                <field name="email_cc_ids" widget="many2many_tags_email" placeholder="Add CC contacts to notify..." context="{'force_email':True, 'show_email':True}" attrs="{'invisible': [('is_cc', '=', False)]}"/>
+                <field name="email_bcc_ids" widget="many2many_tags_email" placeholder="Add BCC contacts to notify..." context="{'force_email':True, 'show_email':True}" attrs="{'invisible': [('is_bcc', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="view_email_cc_account_config_settings" model="ir.ui.view">
+        <field name="name">email_cc settings</field>
+        <field name="model">type_invoice.email_cc</field>
+        <field name="arch" type="xml">
+            <form string="Configure email_cc facture" class="oe_form_configuration">
+                <header>
+                    <button string="Apply" type="object" name="execute" class="oe_highlight"/>
+               <!--      <button string="Cancel" type="object" name="cancel" class="oe_link" special="cancel"/> -->
+                </header>
+          
+          <sheet>
+              <group>
+                <field name="contact"/>
+                <field name="invoice"/>
+                <field name="delivery"/>
+                <field name="other"/>
+                <field name="private"/>
+
+              </group>
+                </sheet>
+               
+            </form>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_view_email_cc_account_config_settings">
+      <field name="name">Email_cc type</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">type_invoice.email_cc</field>
+      <field name="view_mode">form</field>
+      <field name="target">inline</field>
+    </record>
+
+    <menuitem id="menu_account_email_cc_config" parent="account.menu_finance_configuration"
+              action="action_view_email_cc_account_config_settings"/>
+</odoo>
